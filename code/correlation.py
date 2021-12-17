@@ -66,7 +66,7 @@ class Correlation():
     def predict_one_day(self,day_list,day,X,Y,reit_delay):
         predict_day = day_list.index(day)
         rate1,rate2 = self.time_latency_correlation(X,Y,predict_day,x_latency=reit_delay,window_size=6)
-        #print(rate1,rate2)
+        print(rate1,rate2)
         predict_result = (Y[predict_day-reit_delay] - Y[predict_day-reit_delay-1]) / Y[predict_day-reit_delay-1]
         true_result = (X[predict_day] - X[predict_day-1]) / X[predict_day-1]
         if (true_result >=0 and predict_result >=0) or (true_result <0 and predict_result <0):

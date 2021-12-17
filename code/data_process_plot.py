@@ -50,14 +50,19 @@ class REITS():
             ax.set_xlabel('时间_day')
             ax.set_ylabel('收盘价')
             ax.plot(plot_data["day"],plot_data[REIT_name],"r",marker="o",label=REIT_name)
+            ax.set_xticks([])
             ax2 = ax.twinx()
             ax2.plot(plot_data["day"],plot_data[Industry_index],"--",marker="*",label=Industry_index)
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        # plt.show()
-    
+            ax2.set_xticks([])
+        plt.show()
+
+
         corr = Correlation()
+        corr.predict_one_day(day_processed,"2021/9/28",plot_data["平安广州广河REIT_收盘价_day"],plot_data[Industry_index],reit_delay=2)
+        assert 0
         start_day = "2021/8/25"
         end_day = "2021/10/13"
         for reit_delay in  range(1,6):
@@ -98,11 +103,13 @@ class REITS():
             ax.set_xlabel('时间_day')
             ax.set_ylabel('收盘价')
             ax.plot(plot_data["day"],plot_data[REIT_name],"r",marker="o",label=REIT_name)
+            ax.set_xticks([])
             ax2 = ax.twinx()
             ax2.plot(plot_data["day"],plot_data[Industry_index],"--",marker="*",label=Industry_index)
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
+            ax2.set_xticks([])
         #plt.show()
         corr = Correlation()
         start_day = "2021/8/25"
@@ -142,12 +149,15 @@ class REITS():
             ax.set_xlabel('时间_day')
             ax.set_ylabel('收盘价')
             ax.plot(plot_data["day"],plot_data[REIT_name],"r",label=REIT_name)
+            ax.set_xticks([])
             ax2 = ax.twinx()
             ax2.plot(plot_data["day"],plot_data[Industry_index],"--",label=Industry_index)
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        #plt.show()
+            ax2.set_xticks([])
+        plt.show()
+
         corr = Correlation()
         start_day = "2021/8/25"
         end_day = "2021/10/13"
@@ -184,13 +194,16 @@ class REITS():
             ax.set_title('REITS收盘价走势')
             ax.set_xlabel('时间_day')
             ax.set_ylabel('收盘价')
-            ax.plot(plot_data["day"],plot_data[REIT_name],"r",label=REIT_name)
+            ax.plot(plot_data["day"],plot_data[REIT_name],"r",marker="o",label=REIT_name)
+            ax.set_xticks([])
             ax2 = ax.twinx()
-            ax2.plot(plot_data["day"],plot_data[Industry_index],"--",label=Industry_index)
+            ax2.plot(plot_data["day"],plot_data[Industry_index],"--",marker="*",label=Industry_index)
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        #plt.show()
+            ax2.set_xticks([])
+        plt.show()
+
         corr = Correlation()
         start_day = "2021/8/25"
         end_day = "2021/10/13"
@@ -229,13 +242,18 @@ class REITS():
             ax.set_title('REITS收盘价走势')
             ax.set_xlabel('时间_day')
             ax.set_ylabel('收盘价')
-            ax.plot(plot_data["day"],plot_data[REIT_name],"r",label=REIT_name)
+            ax.plot(plot_data["day"],plot_data[REIT_name],"r",marker="o",label=REIT_name)
+            ax.set_xticks([])
+
             ax2 = ax.twinx()
-            ax2.plot(plot_data["day"],plot_data[Industry_index],"--",label=Industry_index)
+            ax2.plot(plot_data["day"],plot_data[Industry_index],"--",marker="*",label=Industry_index)
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        #plt.show()
+            ax2.set_xticks([])
+
+        plt.show()
+
         corr = Correlation()
         start_day = "2021/8/25"
         end_day = "2021/10/13"
@@ -249,12 +267,12 @@ class REITS():
 if __name__ == "__main__":
     reits = REITS()
     reits.highway()
-    reits.industrial_parks()
-    reits.logistics()
-    reits.water()
-    reits.environmental_protection()
+    #reits.industrial_parks()
+    #reits.logistics()
+    #reits.water()
+    #reits.environmental_protection()
 
-    print(reits.all_win_ratios_table)
+    #print(reits.all_win_ratios_table)
     #highway()
     #industrial_parks()
     #logistics()
