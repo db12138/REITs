@@ -10,6 +10,7 @@ class REITS():
     def __init__(self) -> None:
         self.root_path = ""  #"C:/Users/10266/Desktop/中信证券/公募reits课题/"
         self.day_range,self.shangzheng_index = self.read_data()
+        self.all_win_ratios_table = {}
 
     def read_data(self):
         shangzheng_data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="大盘指数")
@@ -37,6 +38,8 @@ class REITS():
         plot_data["平安广州广河REIT_收盘价_day"].reverse()
         plot_data["浙商沪杭甬REIT_收盘价_day"].reverse()
         plot_data["高速公路2(申万)"].reverse()
+
+
         fig = plt.figure(figsize=(8,4))
         REITS_list = ["平安广州广河REIT_收盘价_day","浙商沪杭甬REIT_收盘价_day"]
         Industry_index ="高速公路2(申万)"
@@ -52,27 +55,43 @@ class REITS():
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        plt.show()
-        
+        # plt.show()
     
         corr = Correlation()
-        win_ratio = corr.predict_win_ratio_range_day(day_processed,"2021/8/25","2021/10/13",plot_data["平安广州广河REIT_收盘价_day"],plot_data["高速公路2(申万)"],reit_delay=2)
-        print(win_ratio)
-
+        start_day = "2021/8/25"
+        end_day = "2021/10/13"
+        for reit_delay in  range(1,6):
+            for REIT_name in REITS_list:
+                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+                print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
+                self.all_win_ratios_table.setdefault(REIT_name,{})
+                self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+        
     def industrial_parks(self):
         parks_data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="产业园区")
         plot_data = {}
         start_row_index = 3
         
-        plot_data["day"] = parks_data.iloc[start_row_index:,0]
-        print(plot_data["day"])
-        plot_data["东吴苏园产业REIT_收盘价_day"] = parks_data.iloc[start_row_index:,1]
-        plot_data["博时蛇口产园REIT_收盘价_day"] = parks_data.iloc[start_row_index:,3]
-        plot_data["华安张江光大REIT_收盘价_day"] = parks_data.iloc[start_row_index:,5]
-        plot_data["园区开发2(申万)"] = parks_data.iloc[start_row_index:,7]
+        day_list =  parks_data.iloc[start_row_index:,0]
+        day_processed = []
+        for day in day_list:
+            day_processed.append(f"{day.year}/{day.month}/{day.day}")
+        plot_data["day"] = day_processed
+
+        plot_data["东吴苏园产业REIT_收盘价_day"] = parks_data.iloc[start_row_index:,1].tolist()
+        plot_data["博时蛇口产园REIT_收盘价_day"] = parks_data.iloc[start_row_index:,3].tolist()
+        plot_data["华安张江光大REIT_收盘价_day"] = parks_data.iloc[start_row_index:,5].tolist()
+        plot_data["园区开发2(申万)"] = parks_data.iloc[start_row_index:,7].tolist()
+
+        plot_data["day"].reverse()
+        plot_data["东吴苏园产业REIT_收盘价_day"].reverse()
+        plot_data["博时蛇口产园REIT_收盘价_day"].reverse()
+        plot_data["华安张江光大REIT_收盘价_day"].reverse()
+        plot_data["园区开发2(申万)"].reverse()
         
         fig = plt.figure(figsize=(8,4))
         REITS_list = ["东吴苏园产业REIT_收盘价_day","博时蛇口产园REIT_收盘价_day","华安张江光大REIT_收盘价_day"]
+        Industry_index = "园区开发2(申万)"
         for i,REIT_name in enumerate(REITS_list):
             ax = fig.add_subplot(len(REITS_list),1,i+1)
             ax.set_title('REITS收盘价走势')
@@ -80,20 +99,39 @@ class REITS():
             ax.set_ylabel('收盘价')
             ax.plot(plot_data["day"],plot_data[REIT_name],"r",marker="o",label=REIT_name)
             ax2 = ax.twinx()
-            ax2.plot(plot_data["day"],plot_data["园区开发2(申万)"],"--",marker="*",label="园区开发2(申万)")
+            ax2.plot(plot_data["day"],plot_data[Industry_index],"--",marker="*",label=Industry_index)
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        plt.show()
+        #plt.show()
+        corr = Correlation()
+        start_day = "2021/8/25"
+        end_day = "2021/10/13"
+        for reit_delay in  range(1,6):
+            for REIT_name in REITS_list:
+                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+                print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
+                self.all_win_ratios_table.setdefault(REIT_name,{})
+                self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+        
     def logistics(self):
         logistics_data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="物流")
         plot_data = {}
         start_row_index = 3
-        plot_data["day"] = logistics_data.iloc[start_row_index:,0]
-        print(plot_data["day"])
-        plot_data["中金普洛斯REIT_收盘价_day"] = logistics_data.iloc[start_row_index:,1]
-        plot_data["红土盐田港REIT_收盘价_day"] = logistics_data.iloc[start_row_index:,3]
-        plot_data["物流(申万)"] = logistics_data.iloc[start_row_index:,5]
+        day_list =  logistics_data.iloc[start_row_index:,0]
+        day_processed = []
+        for day in day_list:
+            day_processed.append(f"{day.year}/{day.month}/{day.day}")
+        plot_data["day"] = day_processed
+
+        plot_data["中金普洛斯REIT_收盘价_day"] = logistics_data.iloc[start_row_index:,1].tolist()
+        plot_data["红土盐田港REIT_收盘价_day"] = logistics_data.iloc[start_row_index:,3].tolist()
+        plot_data["物流(申万)"] = logistics_data.iloc[start_row_index:,5].tolist()
+
+        plot_data["day"].reverse()
+        plot_data["中金普洛斯REIT_收盘价_day"].reverse()
+        plot_data["红土盐田港REIT_收盘价_day"].reverse()
+        plot_data["物流(申万)"].reverse()
         
         fig = plt.figure(figsize=(8,4))
         REITS_list = ["中金普洛斯REIT_收盘价_day","红土盐田港REIT_收盘价_day"]
@@ -109,15 +147,34 @@ class REITS():
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        plt.show()
+        #plt.show()
+        corr = Correlation()
+        start_day = "2021/8/25"
+        end_day = "2021/10/13"
+        for reit_delay in  range(1,6):
+            for REIT_name in REITS_list:
+                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+                print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
+                self.all_win_ratios_table.setdefault(REIT_name,{})
+                self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+
     def water(self):
         data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="水务")
         plot_data = {}
         start_row_index = 3
-        plot_data["day"] = data.iloc[start_row_index:,0]
-        print(plot_data["day"])
-        plot_data["富国首创水务REIT_收盘价_day"] = data.iloc[start_row_index:,1]
-        plot_data["水务2(申万)"] = data.iloc[start_row_index:,3]
+        
+        day_list =  data.iloc[start_row_index:,0]
+        day_processed = []
+        for day in day_list:
+            day_processed.append(f"{day.year}/{day.month}/{day.day}")
+        plot_data["day"] = day_processed
+
+        plot_data["富国首创水务REIT_收盘价_day"] = data.iloc[start_row_index:,1].tolist()
+        plot_data["水务2(申万)"] = data.iloc[start_row_index:,3].tolist()
+
+        plot_data["day"].reverse()
+        plot_data["富国首创水务REIT_收盘价_day"].reverse()
+        plot_data["水务2(申万)"].reverse()
         
         fig = plt.figure(figsize=(8,4))
         REITS_list = ["富国首创水务REIT_收盘价_day"]
@@ -133,16 +190,37 @@ class REITS():
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        plt.show()
+        #plt.show()
+        corr = Correlation()
+        start_day = "2021/8/25"
+        end_day = "2021/10/13"
+        for reit_delay in  range(1,6):
+            for REIT_name in REITS_list:
+                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+                print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
+                self.all_win_ratios_table.setdefault(REIT_name,{})
+                self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+
+
     def environmental_protection(self):
         data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="环保")
         plot_data = {}
         start_row_index = 3
-        plot_data["day"] = data.iloc[start_row_index:,0]
-        print(plot_data["day"])
-        plot_data["中航首钢绿能_收盘价_day"] = data.iloc[start_row_index:,1]
-        plot_data["环保工程及服务2(申万)"] = data.iloc[start_row_index:,3]
         
+        day_list =  data.iloc[start_row_index:,0]
+        day_processed = []
+        for day in day_list:
+            day_processed.append(f"{day.year}/{day.month}/{day.day}")
+        plot_data["day"] = day_processed
+
+        plot_data["中航首钢绿能_收盘价_day"] = data.iloc[start_row_index:,1].tolist()
+        plot_data["环保工程及服务2(申万)"] = data.iloc[start_row_index:,3].tolist()
+        
+        plot_data["day"].reverse()
+        plot_data["中航首钢绿能_收盘价_day"].reverse()
+        plot_data["环保工程及服务2(申万)"].reverse()
+        
+
         fig = plt.figure(figsize=(8,4))
         REITS_list = ["中航首钢绿能_收盘价_day"]
         Industry_index ="环保工程及服务2(申万)"
@@ -157,10 +235,26 @@ class REITS():
             ax2.set_ylabel("收盘价")
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
-        plt.show()
+        #plt.show()
+        corr = Correlation()
+        start_day = "2021/8/25"
+        end_day = "2021/10/13"
+        for reit_delay in  range(1,6):
+            for REIT_name in REITS_list:
+                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+                print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
+                self.all_win_ratios_table.setdefault(REIT_name,{})
+                self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+
 if __name__ == "__main__":
     reits = REITS()
     reits.highway()
+    reits.industrial_parks()
+    reits.logistics()
+    reits.water()
+    reits.environmental_protection()
+
+    print(reits.all_win_ratios_table)
     #highway()
     #industrial_parks()
     #logistics()
