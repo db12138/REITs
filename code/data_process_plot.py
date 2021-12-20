@@ -72,8 +72,11 @@ class REITS():
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
             
-            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
-            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=1)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio1"] = best_delay_win_ratio
+            best_delay_win_ratio2 = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=2)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio2"] = best_delay_win_ratio2
+
     def industrial_parks(self):
         parks_data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="产业园区")
         plot_data = {}
@@ -125,8 +128,10 @@ class REITS():
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
             
-            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
-            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=1)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio1"] = best_delay_win_ratio
+            best_delay_win_ratio2 = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=2)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio2"] = best_delay_win_ratio2
 
         
     def logistics(self):
@@ -178,8 +183,10 @@ class REITS():
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
             
-            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
-            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=1)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio1"] = best_delay_win_ratio
+            best_delay_win_ratio2 = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=2)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio2"] = best_delay_win_ratio2
 
     def water(self):
         data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="水务")
@@ -229,8 +236,10 @@ class REITS():
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
             
-            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
-            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=1)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio1"] = best_delay_win_ratio
+            best_delay_win_ratio2 = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=2)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio2"] = best_delay_win_ratio2
 
 
     def environmental_protection(self):
@@ -284,8 +293,10 @@ class REITS():
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
             
-            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
-            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=1)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio1"] = best_delay_win_ratio
+            best_delay_win_ratio2 = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size,ratio_choice=2)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio_by_ratio2"] = best_delay_win_ratio2
 
 def print_dict(one_dict,recursive_level):
 	if recursive_level >=2:

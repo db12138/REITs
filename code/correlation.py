@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import choose
 import pandas as pd
 import numpy as np
 import math
@@ -63,14 +64,18 @@ class Correlation():
         else:
             raise "No such correlation index"
 
-    def predict_one_day_range_delay(self,day_list,day,X,Y,reit_delay_list=[1,2,3,4,5],window_size = 6):
+    def predict_one_day_range_delay(self,day_list,day,X,Y,reit_delay_list=[1,2,3,4,5],window_size = 6,ratio_choice=1):
         predict_day = day_list.index(day)
         best_rate = 0
         best_reit_delay = 0
         for reit_delay in reit_delay_list:
             rate1,rate2 = self.time_latency_correlation(X,Y,predict_day,x_latency=reit_delay,window_size=window_size)
-            if rate1 > best_rate : 
-                best_rate = rate1 
+            if ratio_choice == 1:
+                choosed_ratio = rate1
+            else:
+                choosed_ratio = rate2
+            if choosed_ratio > best_rate : 
+                best_rate = choosed_ratio
                 best_reit_delay = reit_delay
         
         predict_result = (Y[predict_day-best_reit_delay] - Y[predict_day-best_reit_delay-1]) / Y[predict_day-best_reit_delay-1]
@@ -92,13 +97,13 @@ class Correlation():
             return True
         else:
             return False
-    def predict_win_ratio_range_day(self,day_list,start_day,end_day,X,Y,reit_delay_list=[1,2,3,4,5],window_size=6):
+    def predict_win_ratio_range_day(self,day_list,start_day,end_day,X,Y,reit_delay_list=[1,2,3,4,5],window_size=6,ratio_choice=1):
         start_index = day_list.index(start_day)
         end_index = day_list.index(end_day)
         candicate_day_list  = day_list[start_index:end_index]
         win_ratio = 0
         for day in candicate_day_list:
-            result = self.predict_one_day_range_delay(day_list,day,X,Y,reit_delay_list,window_size)
+            result = self.predict_one_day_range_delay(day_list,day,X,Y,reit_delay_list,window_size,ratio_choice=ratio_choice)
             if result:
                 win_ratio += 1
         win_ratio /= len(candicate_day_list)
