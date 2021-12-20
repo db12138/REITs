@@ -63,10 +63,28 @@ class Correlation():
         else:
             raise "No such correlation index"
 
-    def predict_one_day(self,day_list,day,X,Y,reit_delay):
+    def predict_one_day_range_delay(self,day_list,day,X,Y,reit_delay_list=[1,2,3,4,5],window_size = 6):
         predict_day = day_list.index(day)
-        rate1,rate2 = self.time_latency_correlation(X,Y,predict_day,x_latency=reit_delay,window_size=6)
-        print(rate1,rate2)
+        best_rate = 0
+        best_reit_delay = 0
+        for reit_delay in reit_delay_list:
+            rate1,rate2 = self.time_latency_correlation(X,Y,predict_day,x_latency=reit_delay,window_size=window_size)
+            if rate1 > best_rate : 
+                best_rate = rate1 
+                best_reit_delay = reit_delay
+        
+        predict_result = (Y[predict_day-best_reit_delay] - Y[predict_day-best_reit_delay-1]) / Y[predict_day-best_reit_delay-1]
+        true_result = (X[predict_day] - X[predict_day-1]) / X[predict_day-1]
+        if (true_result >=0 and predict_result >=0) or (true_result <0 and predict_result <0):
+            # print("TRUE")
+            return True
+        else:
+            return False
+    
+    def predict_one_day(self,day_list,day,X,Y,reit_delay,window_size = 6):
+        predict_day = day_list.index(day)
+        rate1,rate2 = self.time_latency_correlation(X,Y,predict_day,x_latency=reit_delay,window_size=window_size)
+        #print(rate1,rate2)
         predict_result = (Y[predict_day-reit_delay] - Y[predict_day-reit_delay-1]) / Y[predict_day-reit_delay-1]
         true_result = (X[predict_day] - X[predict_day-1]) / X[predict_day-1]
         if (true_result >=0 and predict_result >=0) or (true_result <0 and predict_result <0):
@@ -74,14 +92,26 @@ class Correlation():
             return True
         else:
             return False
-
-    def predict_win_ratio_range_day(self,day_list,start_day,end_day,X,Y,reit_delay=2):
+    def predict_win_ratio_range_day(self,day_list,start_day,end_day,X,Y,reit_delay_list=[1,2,3,4,5],window_size=6):
         start_index = day_list.index(start_day)
         end_index = day_list.index(end_day)
         candicate_day_list  = day_list[start_index:end_index]
         win_ratio = 0
         for day in candicate_day_list:
-            result = self.predict_one_day(day_list,day,X,Y,reit_delay)
+            result = self.predict_one_day_range_delay(day_list,day,X,Y,reit_delay_list,window_size)
+            if result:
+                win_ratio += 1
+        win_ratio /= len(candicate_day_list)
+        return win_ratio
+
+
+    def predict_win_ratio_range_day_fix_reit_delay(self,day_list,start_day,end_day,X,Y,reit_delay=2,window_size = 6):
+        start_index = day_list.index(start_day)
+        end_index = day_list.index(end_day)
+        candicate_day_list  = day_list[start_index:end_index]
+        win_ratio = 0
+        for day in candicate_day_list:
+            result = self.predict_one_day(day_list,day,X,Y,reit_delay,window_size=window_size)
             if result:
                 win_ratio += 1
 

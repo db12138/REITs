@@ -7,10 +7,11 @@ from correlation import Correlation
 matplotlib.rcParams['font.sans-serif']=['SimHei']
 
 class REITS():
-    def __init__(self) -> None:
+    def __init__(self,config) -> None:
         self.root_path = ""  #"C:/Users/10266/Desktop/中信证券/公募reits课题/"
         self.day_range,self.shangzheng_index = self.read_data()
         self.all_win_ratios_table = {}
+        self.config = config 
 
     def read_data(self):
         shangzheng_data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="大盘指数")
@@ -57,21 +58,22 @@ class REITS():
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
             ax2.set_xticks([])
-        plt.show()
-
+        if self.config.plot:
+            plt.show()
 
         corr = Correlation()
         corr.predict_one_day(day_processed,"2021/9/28",plot_data["平安广州广河REIT_收盘价_day"],plot_data[Industry_index],reit_delay=2)
-        assert 0
-        start_day = "2021/8/25"
-        end_day = "2021/10/13"
-        for reit_delay in  range(1,6):
-            for REIT_name in REITS_list:
-                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+        start_day = self.config.start_day
+        end_day = self.config.end_day
+        for REIT_name in REITS_list:
+            for reit_delay in  range(1,6):
+                win_ratio = corr.predict_win_ratio_range_day_fix_reit_delay(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
                 print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
-        
+            
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
     def industrial_parks(self):
         parks_data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="产业园区")
         plot_data = {}
@@ -110,16 +112,22 @@ class REITS():
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
             ax2.set_xticks([])
-        #plt.show()
+        if self.config.plot:
+            plt.show()
+
         corr = Correlation()
-        start_day = "2021/8/25"
-        end_day = "2021/10/13"
-        for reit_delay in  range(1,6):
-            for REIT_name in REITS_list:
-                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+        start_day = self.config.start_day
+        end_day = self.config.end_day
+        for REIT_name in REITS_list:
+            for reit_delay in  range(1,6):
+                win_ratio = corr.predict_win_ratio_range_day_fix_reit_delay(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
                 print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+            
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
+
         
     def logistics(self):
         logistics_data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="物流")
@@ -156,17 +164,22 @@ class REITS():
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
             ax2.set_xticks([])
-        plt.show()
+        if self.config.plot:
+            plt.show()
 
         corr = Correlation()
-        start_day = "2021/8/25"
-        end_day = "2021/10/13"
-        for reit_delay in  range(1,6):
-            for REIT_name in REITS_list:
-                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+        start_day = self.config.start_day
+        end_day = self.config.end_day
+
+        for REIT_name in REITS_list:
+            for reit_delay in  range(1,6):
+                win_ratio = corr.predict_win_ratio_range_day_fix_reit_delay(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
                 print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+            
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
 
     def water(self):
         data = pd.read_excel(self.root_path+"data/reits_data.xlsx",sheet_name="水务")
@@ -202,17 +215,22 @@ class REITS():
             ax.legend(bbox_to_anchor=(0.1,1.2),loc="upper center")
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
             ax2.set_xticks([])
-        plt.show()
+        if self.config.plot:
+            plt.show()
 
         corr = Correlation()
-        start_day = "2021/8/25"
-        end_day = "2021/10/13"
-        for reit_delay in  range(1,6):
-            for REIT_name in REITS_list:
-                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+        start_day = self.config.start_day
+        end_day = self.config.end_day
+
+        for REIT_name in REITS_list:
+            for reit_delay in  range(1,6):
+                win_ratio = corr.predict_win_ratio_range_day_fix_reit_delay(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
                 print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+            
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
 
 
     def environmental_protection(self):
@@ -252,27 +270,61 @@ class REITS():
             ax2.legend(bbox_to_anchor=(1.1,1.1),loc="upper right")
             ax2.set_xticks([])
 
-        plt.show()
+        if self.config.plot:
+            plt.show()
 
         corr = Correlation()
-        start_day = "2021/8/25"
-        end_day = "2021/10/13"
-        for reit_delay in  range(1,6):
-            for REIT_name in REITS_list:
-                win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
+        start_day = self.config.start_day
+        end_day = self.config.end_day
+
+        for REIT_name in REITS_list:
+            for reit_delay in  range(1,6):
+                win_ratio = corr.predict_win_ratio_range_day_fix_reit_delay(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay=reit_delay)
                 print(f"delay:{reit_delay}  {start_day}- { end_day } REIT:{REIT_name},  win_ratio:{win_ratio}")
                 self.all_win_ratios_table.setdefault(REIT_name,{})
                 self.all_win_ratios_table[REIT_name].setdefault(reit_delay,win_ratio)
+            
+            best_delay_win_ratio = corr.predict_win_ratio_range_day(day_processed,start_day,end_day,plot_data[REIT_name],plot_data[Industry_index],reit_delay_list=self.config.reit_delay_list,window_size=self.config.window_size)
+            self.all_win_ratios_table[REIT_name]["best_auto_delay_win_ratio"] = best_delay_win_ratio
+
+def print_dict(one_dict,recursive_level):
+	if recursive_level >=2:
+		return str(one_dict)
+
+	res = ""
+	curtab = "\t"*(recursive_level+1)
+	for k,v in one_dict.items():
+		if type(v) == type({}):
+			res += f'{curtab}"{k}":{print_dict(v,recursive_level+1)}\n'
+		else:
+			if type(v) == type([]):
+				res += f'{curtab}"{k}":{v},\n'
+			else:
+				res += f'{curtab}"{k}":"{v}",\n'
+	if recursive_level == 0:
+		print("\n{\n"+res+"},")
+	else:
+		return "\n\t{\n"+res+"\t},"
+
+class Config():
+    def __init__(self):
+        self.window_size = 6 
+        self.reit_delay_list = [1,2,3,4,5]
+        self.plot = False
+        self.start_day = "2021/8/25"
+        self.end_day = "2021/10/13"
+
 
 if __name__ == "__main__":
-    reits = REITS()
+    config = Config()
+    reits = REITS(config)
     reits.highway()
-    #reits.industrial_parks()
-    #reits.logistics()
-    #reits.water()
-    #reits.environmental_protection()
+    reits.industrial_parks()
+    reits.logistics()
+    reits.water()
+    reits.environmental_protection()
 
-    #print(reits.all_win_ratios_table)
+    print_dict(reits.all_win_ratios_table,0)
     #highway()
     #industrial_parks()
     #logistics()
