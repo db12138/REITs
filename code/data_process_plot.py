@@ -321,7 +321,7 @@ class Config():
     def __init__(self):
         self.window_size = 6 
         self.reit_delay_list = [1,2,3,4,5]
-        self.plot = False
+        self.plot = True
         self.start_day = "2021/8/25"
         self.end_day = "2021/10/13"
 
